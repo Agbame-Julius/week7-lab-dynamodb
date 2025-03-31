@@ -41,13 +41,13 @@
                 <div class="todo-status" th:text="${todo.status.displayValue}"></div>
                 <div class="todo-actions">
                     <div class="status-buttons">
-                        <a th:if="${todo.status != T(com.week7_lab._dynamo.model.TodoStatus).TODO}"
+                        <a th:if="${todo.status != T(com.week7_lab_dynamo.model.TodoStatus).TODO}"
                            th:href="@{/updateStatus/{id}/{status}(id=${todo.id}, status=TODO)}"
                            class="status-button todo">To Do</a>
-                        <a th:if="${todo.status != T(com.week7_lab._dynamo.model.TodoStatus).IN_PROGRESS}"
+                        <a th:if="${todo.status != T(com.week7_lab_dynamo.model.TodoStatus).IN_PROGRESS}"
                            th:href="@{/updateStatus/{id}/{status}(id=${todo.id}, status=IN_PROGRESS)}"
                            class="status-button in_progress">In Progress</a>
-                        <a th:if="${todo.status != T(com.week7_lab._dynamo.model.TodoStatus).DONE}"
+                        <a th:if="${todo.status != T(com.week7_lab_dynamo.model.TodoStatus).DONE}"
                            th:href="@{/updateStatus/{id}/{status}(id=${todo.id}, status=DONE)}"
                            class="status-button done">Done</a>
                     </div>
