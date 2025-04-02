@@ -4,17 +4,13 @@ import com.example.week7_lab_dynamo.model.TodoStatus;
 import com.example.week7_lab_dynamo.model.TodoItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
-import software.amazon.awssdk.enhanced.dynamodb.Key;
-import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
+import software.amazon.awssdk.enhanced.dynamodb.*;
 import software.amazon.awssdk.enhanced.dynamodb.internal.converter.attribute.EnhancedAttributeValue;
 import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
 import software.amazon.awssdk.enhanced.dynamodb.model.ScanEnhancedRequest;
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -36,11 +32,19 @@ public class TodoDynamoDbRepository {
     }
 
     public List<TodoItem> findByStatus(TodoStatus status) {
+        Map<String, AttributeValue> expressionValues = new HashMap<>();
+        expressionValues.put(":statusValue", AttributeValue.builder().s(status.name()).build());
+
+        Map<String, String> expressionNames = new HashMap<>();
+        expressionNames.put("#statusAttr", "status");
+
+        Expression filterExpression = Expression.builder()
+                .expression("#statusAttr = :statusValue")
+                .expressionNames(expressionNames)
+                .expressionValues(expressionValues)
+                .build();
         ScanEnhancedRequest request = ScanEnhancedRequest.builder()
-                .filterExpression(software.amazon.awssdk.enhanced.dynamodb.Expression.builder()
-                        .expression("#s = :status")
-                       .putExpressionValue(":status", EnhancedAttributeValue.fromString(status.name()).toAttributeValue())
-                        .build())
+                .filterExpression(filterExpression)
                 .build();
 
         PageIterable<TodoItem> pagedResult = todoTable.scan(request);
