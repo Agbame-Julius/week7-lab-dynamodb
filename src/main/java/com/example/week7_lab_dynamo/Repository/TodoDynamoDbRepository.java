@@ -38,7 +38,7 @@ public class TodoDynamoDbRepository {
     public List<TodoItem> findByStatus(TodoStatus status) {
         ScanEnhancedRequest request = ScanEnhancedRequest.builder()
                 .filterExpression(software.amazon.awssdk.enhanced.dynamodb.Expression.builder()
-                        .expression("status = :status")
+                        .expression("#s = :status")
                        .putExpressionValue(":status", EnhancedAttributeValue.fromString(status.name()).toAttributeValue())
                         .build())
                 .build();
